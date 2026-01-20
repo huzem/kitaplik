@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>Hitit Üniversitesi | Eğitim Kitaplığı</title>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/dearflip@2.1.1/dist/css/dearflip.min.css">
+
+<style>
+:root {
+    --hitit-bordo: #7a0026;
+    --hitit-gri: #f4f6f9;
+}
+
+body {
+    margin: 0;
+    font-family: "Segoe UI", Arial, sans-serif;
+    background: var(--hitit-gri);
+}
+
+header {
+    background: var(--hitit-bordo);
+    color: white;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+header img {
+    height: 70px;
+}
+
+.container {
+    max-width: 1300px;
+    margin: auto;
+    padding: 30px;
+}
+
+.section {
+    margin-bottom: 40px;
+}
+
+.section h2 {
+    border-left: 6px solid var(--hitit-bordo);
+    padding-left: 15px;
+}
+
+.modules {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 20px;
+}
+
+.module {
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.module button {
+    margin-top: 10px;
+    background: var(--hitit-bordo);
+    color: white;
+    border: none;
+    padding: 10px;
+    width: 100%;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.module button:hover {
+    opacity: 0.9;
+}
+
+#flipbook-container {
+    margin-top: 50px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <img src="logo.png" alt="Hitit Üniversitesi">
+    <div>
+        <h1>Hitit Üniversitesi</h1>
+        <p>Uzaktan Eğitim Uygulama ve Araştırma Merkezi</p>
+    </div>
+</header>
+
+<div class="container">
+
+<!-- ÖLÇME DEĞERLENDİRME -->
+<div class="section">
+<h2>Yükseköğretimde Yeterlilik Temelli Ölçme Değerlendirme</h2>
+
+<div class="modules">
+    <div class="module">
+        <h4>Modül 1</h4>
+        <p>Ölçme ve Değerlendirmede Temel Kavramlar</p>
+        <button onclick="openBook('Modül 1 Ölçme ve Değerlendirmede Temel Kavramlar.pdf')">Aç</button>
+    </div>
+
+    <div class="module">
+        <h4>Modül 2</h4>
+        <p>Yeterlilik ve Performans Temelli Ölçme</p>
+        <button onclick="openBook('Modül 2 Yeterlilik ve Performans Temelli Ölçme-Değerlendirmeye Giriş.pdf')">Aç</button>
+    </div>
+
+    <div class="module">
+        <h4>Modül 3</h4>
+        <p>Yöntemler ve Puanlama Araçları</p>
+        <button onclick="openBook('Modül 3 Yeterlilik Temelli Ölçme-Değerlendirme Yöntemleri, Stratejileri ve Puanlama Araçları.pdf')">Aç</button>
+    </div>
+
+    <div class="module">
+        <h4>Modül 4</h4>
+        <p>Etkili Geribildirim Rehberi</p>
+        <button onclick="openBook('Modül 4 Performans Değerlendirmede Etkili ve Nitelikli Geribildirim Verme Rehberi.pdf')">Aç</button>
+    </div>
+
+    <div class="module">
+        <h4>Modül 5</h4>
+        <p>Uygulama Örnekleri</p>
+        <button onclick="openBook('Modül 5 Eğitici Eğitimleri Sonucunda Birimlerden Gelen Uygulama Örnekleri.pdf')">Aç</button>
+    </div>
+</div>
+</div>
+
+<!-- YAPAY ZEKA -->
+<div class="section">
+<h2>Yükseköğretimde Yapay Zekâ Destekli Öğretim</h2>
+
+<div class="modules">
+    <div class="module">
+        <h4>Modül 1</h4>
+        <p>Yapay Zekâ ve Eğitim</p>
+        <button onclick="openBook('Modül 1 Yapay Zekâ ve Eğitim.pdf')">Aç</button>
+    </div>
+
+    <div class="module">
+        <h4>Modül 2</h4>
+        <p>YZ Destekli Öğretim</p>
+        <button onclick="openBook('Modül 2 Yükseköğretimde Yapay Zekâ Destekli Öğretim.pdf')">Aç</button>
+    </div>
+
+    <div class="module">
+        <h4>Modül 3</h4>
+        <p>YZ Uygulamaları</p>
+        <button onclick="openBook('Modül 3 Yükseköğretimde Kullanılabilecek Yapay Zekâ Uygulamaları.pdf')">Aç</button>
+    </div>
+
+    <div class="module">
+        <h4>Modül 4</h4>
+        <p>Öğretime Entegrasyon</p>
+        <button onclick="openBook('Modül 4 Yükseköğretimde Yapay Zekâ Araçlarının Öğretim Uygulamalarına Entegrasyonu.pdf')">Aç</button>
+    </div>
+</div>
+</div>
+
+<div id="flipbook-container"></div>
+
+</div>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/dearflip@2.1.1/dist/js/dearflip.min.js"></script>
+
+<script>
+function openBook(pdf) {
+    document.getElementById("flipbook-container").innerHTML =
+        '<div id="flipbook" class="df-container"></div>';
+
+    new DearFlip.DFLipBook(
+        document.getElementById("flipbook"),
+        { pdf: pdf, height: 750 }
+    );
+}
+</script>
+
+</body>
+</html>
