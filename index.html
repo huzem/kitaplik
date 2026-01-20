@@ -2,181 +2,293 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
-<title>Hitit Üniversitesi | Eğitim Kitaplığı</title>
+<title>Hitit Üniversitesi | Eğitim Kılavuzları</title>
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/dearflip@2.1.1/dist/css/dearflip.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/page-flip@2.0.7/dist/js/page-flip.browser.min.js"></script>
 
 <style>
-:root {
-    --hitit-bordo: #7a0026;
-    --hitit-gri: #f4f6f9;
+:root{
+  --bordo:#7a0026;
+  --gri:#f4f6f9;
 }
 
-body {
-    margin: 0;
-    font-family: "Segoe UI", Arial, sans-serif;
-    background: var(--hitit-gri);
+*{ box-sizing:border-box; }
+
+body{
+  margin:0;
+  font-family:Segoe UI, Arial, sans-serif;
+  background:var(--gri);
+  user-select:none;
 }
 
-header {
-    background: var(--hitit-bordo);
-    color: white;
-    padding: 20px;
-    display: flex;
-    align-items: center;
-    gap: 20px;
+header{
+  background:var(--bordo);
+  color:#fff;
+  padding:15px 25px;
+  display:flex;
+  align-items:center;
+  gap:15px;
 }
 
-header img {
-    height: 70px;
+header img{
+  height:55px;
+  background:#fff;
+  padding:6px;
+  border-radius:6px;
 }
 
-.container {
-    max-width: 1300px;
-    margin: auto;
-    padding: 30px;
+.container{
+  max-width:1400px;
+  margin:auto;
+  padding:20px;
+  display:grid;
+  grid-template-columns:320px 1fr;
+  gap:20px;
 }
 
-.section {
-    margin-bottom: 40px;
+.sidebar{
+  background:#fff;
+  padding:18px;
+  border-radius:10px;
 }
 
-.section h2 {
-    border-left: 6px solid var(--hitit-bordo);
-    padding-left: 15px;
+.item{
+  padding:10px;
+  margin-top:6px;
+  border-radius:6px;
+  cursor:pointer;
+}
+.item:hover,.item.active{
+  background:var(--bordo);
+  color:#fff;
 }
 
-.modules {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-    gap: 20px;
+.viewer{
+  background:#fff;
+  border-radius:10px;
+  padding:10px;
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
 }
 
-.module {
-    background: white;
-    border-radius: 10px;
-    padding: 20px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+.toolbar{
+  display:flex;
+  justify-content:flex-end;
+  gap:8px;
+  margin-bottom:8px;
 }
 
-.module button {
-    margin-top: 10px;
-    background: var(--hitit-bordo);
-    color: white;
-    border: none;
-    padding: 10px;
-    width: 100%;
-    border-radius: 5px;
-    cursor: pointer;
+.toolbar button{
+  background:var(--bordo);
+  color:#fff;
+  border:none;
+  padding:6px 12px;
+  border-radius:6px;
+  cursor:pointer;
 }
 
-.module button:hover {
-    opacity: 0.9;
+#book-wrapper{
+  flex:1;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  overflow:hidden;
 }
 
-#flipbook-container {
-    margin-top: 50px;
+#book{
+  transform-origin:center center;
+  transition:transform .15s ease;
+}
+
+/* 🔐 LOGIN OVERLAY */
+#login{
+  position:fixed;
+  inset:0;
+  background:#7a0026;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  z-index:9999;
+}
+
+.login-box{
+  background:#fff;
+  padding:30px;
+  border-radius:12px;
+  text-align:center;
+  width:320px;
+}
+
+.login-box img{
+  width:160px;
+  margin-bottom:15px;
+}
+
+.login-box input{
+  width:100%;
+  padding:10px;
+  margin-top:10px;
+}
+
+.login-box button{
+  width:100%;
+  margin-top:12px;
+  padding:10px;
+  background:var(--bordo);
+  color:#fff;
+  border:none;
+  border-radius:6px;
+  cursor:pointer;
 }
 </style>
 </head>
 
-<body>
+<body oncontextmenu="return false">
+
+<!-- 🔐 GİRİŞ -->
+<div id="login">
+  <div class="login-box">
+    <img src="https://hitit.edu.tr/images/HititLogoYeni.svg">
+    <h3>Akademisyen Girişi</h3>
+    <input type="password" id="password" placeholder="Şifre">
+    <button onclick="checkLogin()">Giriş</button>
+  </div>
+</div>
 
 <header>
-    <img src="logo.png" alt="Hitit Üniversitesi">
-    <div>
-        <h1>Hitit Üniversitesi</h1>
-        <p>Uzaktan Eğitim Uygulama ve Araştırma Merkezi</p>
-    </div>
+  <img src="https://hitit.edu.tr/images/HititLogoYeni.svg">
+  <div>
+    <h2>Hitit Üniversitesi</h2>
+    <small>Uzaktan Eğitim Uygulama ve Araştırma Merkezi</small>
+  </div>
 </header>
 
 <div class="container">
 
-<!-- ÖLÇME DEĞERLENDİRME -->
-<div class="section">
-<h2>Yükseköğretimde Yeterlilik Temelli Ölçme Değerlendirme</h2>
+<div class="sidebar" id="menu"></div>
 
-<div class="modules">
-    <div class="module">
-        <h4>Modül 1</h4>
-        <p>Ölçme ve Değerlendirmede Temel Kavramlar</p>
-        <button onclick="openBook('Modül 1 Ölçme ve Değerlendirmede Temel Kavramlar.pdf')">Aç</button>
-    </div>
-
-    <div class="module">
-        <h4>Modül 2</h4>
-        <p>Yeterlilik ve Performans Temelli Ölçme</p>
-        <button onclick="openBook('Modül 2 Yeterlilik ve Performans Temelli Ölçme-Değerlendirmeye Giriş.pdf')">Aç</button>
-    </div>
-
-    <div class="module">
-        <h4>Modül 3</h4>
-        <p>Yöntemler ve Puanlama Araçları</p>
-        <button onclick="openBook('Modül 3 Yeterlilik Temelli Ölçme-Değerlendirme Yöntemleri, Stratejileri ve Puanlama Araçları.pdf')">Aç</button>
-    </div>
-
-    <div class="module">
-        <h4>Modül 4</h4>
-        <p>Etkili Geribildirim Rehberi</p>
-        <button onclick="openBook('Modül 4 Performans Değerlendirmede Etkili ve Nitelikli Geribildirim Verme Rehberi.pdf')">Aç</button>
-    </div>
-
-    <div class="module">
-        <h4>Modül 5</h4>
-        <p>Uygulama Örnekleri</p>
-        <button onclick="openBook('Modül 5 Eğitici Eğitimleri Sonucunda Birimlerden Gelen Uygulama Örnekleri.pdf')">Aç</button>
-    </div>
-</div>
+<div class="viewer">
+  <div class="toolbar">
+    <button onclick="zoomIn()">＋</button>
+    <button onclick="zoomOut()">－</button>
+    <button onclick="toggleFullscreen()">⛶</button>
+  </div>
+  <div id="book-wrapper">
+    <div id="book"></div>
+  </div>
 </div>
 
-<!-- YAPAY ZEKA -->
-<div class="section">
-<h2>Yükseköğretimde Yapay Zekâ Destekli Öğretim</h2>
-
-<div class="modules">
-    <div class="module">
-        <h4>Modül 1</h4>
-        <p>Yapay Zekâ ve Eğitim</p>
-        <button onclick="openBook('Modül 1 Yapay Zekâ ve Eğitim.pdf')">Aç</button>
-    </div>
-
-    <div class="module">
-        <h4>Modül 2</h4>
-        <p>YZ Destekli Öğretim</p>
-        <button onclick="openBook('Modül 2 Yükseköğretimde Yapay Zekâ Destekli Öğretim.pdf')">Aç</button>
-    </div>
-
-    <div class="module">
-        <h4>Modül 3</h4>
-        <p>YZ Uygulamaları</p>
-        <button onclick="openBook('Modül 3 Yükseköğretimde Kullanılabilecek Yapay Zekâ Uygulamaları.pdf')">Aç</button>
-    </div>
-
-    <div class="module">
-        <h4>Modül 4</h4>
-        <p>Öğretime Entegrasyon</p>
-        <button onclick="openBook('Modül 4 Yükseköğretimde Yapay Zekâ Araçlarının Öğretim Uygulamalarına Entegrasyonu.pdf')">Aç</button>
-    </div>
 </div>
-</div>
-
-<div id="flipbook-container"></div>
-
-</div>
-
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/dearflip@2.1.1/dist/js/dearflip.min.js"></script>
 
 <script>
-function openBook(pdf) {
-    document.getElementById("flipbook-container").innerHTML =
-        '<div id="flipbook" class="df-container"></div>';
+/* 🔐 ŞİFRE */
+const PASSWORD = "hitit2026";
 
-    new DearFlip.DFLipBook(
-        document.getElementById("flipbook"),
-        { pdf: pdf, height: 750 }
-    );
+if(sessionStorage.getItem("auth")==="ok"){
+  document.getElementById("login").style.display="none";
 }
+
+function checkLogin(){
+  if(document.getElementById("password").value===PASSWORD){
+    sessionStorage.setItem("auth","ok");
+    document.getElementById("login").style.display="none";
+  }else{
+    alert("Şifre hatalı");
+  }
+}
+
+pdfjsLib.GlobalWorkerOptions.workerSrc =
+  "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+
+/* 📘 MODÜLLER */
+const modules={
+  "📘 Ölçme & Değerlendirme":[
+    "olcme_modul1.pdf","olcme_modul2.pdf","olcme_modul3.pdf","olcme_modul4.pdf","olcme_modul5.pdf"
+  ],
+  "🤖 Yapay Zekâ":[
+    "yz_modul1.pdf","yz_modul2.pdf","yz_modul3.pdf","yz_modul4.pdf"
+  ]
+};
+
+let pageFlip=null;
+let zoom=1;
+
+/* MENÜ */
+const menu=document.getElementById("menu");
+for(const g in modules){
+  const h=document.createElement("h4");
+  h.textContent=g;
+  menu.appendChild(h);
+
+  modules[g].forEach((pdf,i)=>{
+    const d=document.createElement("div");
+    d.className="item";
+    d.textContent="Modül "+(i+1);
+    d.onclick=()=>loadPDF(pdf,d);
+    menu.appendChild(d);
+  });
+}
+
+/* PDF YÜKLE */
+async function loadPDF(pdf,el){
+  document.querySelectorAll(".item").forEach(i=>i.classList.remove("active"));
+  el.classList.add("active");
+
+  const book=document.getElementById("book");
+  book.innerHTML="";
+  zoom=1;
+  book.style.transform="scale(1)";
+
+  const pdfDoc=await pdfjsLib.getDocument(pdf).promise;
+  const images=[];
+  const dpr=window.devicePixelRatio||1;
+
+  for(let i=1;i<=pdfDoc.numPages;i++){
+    const page=await pdfDoc.getPage(i);
+    const viewport=page.getViewport({scale:2.5});
+    const canvas=document.createElement("canvas");
+    const ctx=canvas.getContext("2d");
+
+    canvas.width=viewport.width*dpr;
+    canvas.height=viewport.height*dpr;
+    canvas.style.width=viewport.width+"px";
+    canvas.style.height=viewport.height+"px";
+    ctx.scale(dpr,dpr);
+
+    await page.render({canvasContext:ctx,viewport}).promise;
+    images.push(canvas.toDataURL("image/jpeg",1));
+  }
+
+  pageFlip=new St.PageFlip(book,{
+    width:420,
+    height:600,
+    size:"stretch",
+    showCover:true
+  });
+
+  pageFlip.loadFromImages(images);
+}
+
+/* ZOOM */
+function zoomIn(){ zoom=Math.min(2.2,zoom+0.15); applyZoom(); }
+function zoomOut(){ zoom=Math.max(0.6,zoom-0.15); applyZoom(); }
+function applyZoom(){
+  document.getElementById("book").style.transform=`scale(${zoom})`;
+}
+
+/* FULLSCREEN */
+function toggleFullscreen(){
+  const v=document.querySelector(".viewer");
+  if(!document.fullscreenElement){ v.requestFullscreen(); }
+  else{ document.exitFullscreen(); }
+}
+
+/* CTRL ENGEL */
+document.addEventListener("keydown",e=>{
+  if(e.ctrlKey && ["s","p"].includes(e.key.toLowerCase())) e.preventDefault();
+});
 </script>
 
 </body>
