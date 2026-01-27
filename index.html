@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hitit Üniversitesi | Dijital Kütüphane</title>
+    <title>Hitit Üniversitesi | Akademik Yayın Portalı</title>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -11,115 +11,123 @@
     <style>
         :root {
             --hitit-bordo: #7a0026;
-            --hitit-koyu: #4d0018;
-            --arka-plan: #2c2c2c;
-            --beyaz: #ffffff;
-            --gri: #f4f6f9;
+            --hitit-bordo-light: #9e0031;
+            --bg-workspace: #1e1e1e;
+            --bg-sidebar: #ffffff;
+            --text-main: #2d3436;
+            --border-color: #dfe6e9;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
-            font-family: 'Segoe UI', sans-serif;
-            background-color: var(--gri);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f8f9fa;
             height: 100vh;
             display: flex;
             flex-direction: column;
+            color: var(--text-main);
             overflow: hidden;
         }
 
-        /* 🔐 GİRİŞ EKRANI */
+        /* 🔐 AKADEMİK GİRİŞ PORTALI */
         #login-overlay {
-            position: fixed; inset: 0; background: var(--hitit-bordo);
+            position: fixed; inset: 0; background: linear-gradient(135deg, var(--hitit-bordo) 0%, #4d0018 100%);
             display: flex; justify-content: center; align-items: center; z-index: 2000;
         }
         .login-card {
-            background: var(--beyaz); padding: 40px; border-radius: 20px;
-            text-align: center; width: 380px; box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+            background: white; padding: 50px; border-radius: 2px; /* Keskin köşeler daha kurumsal durur */
+            text-align: center; width: 400px; box-shadow: 0 30px 60px rgba(0,0,0,0.5);
         }
-        .login-card img { width: 180px; margin-bottom: 20px; }
+        .login-card img { width: 160px; margin-bottom: 30px; }
+        .login-card h2 { font-weight: 300; letter-spacing: 1px; margin-bottom: 20px; color: var(--hitit-bordo); }
         .login-card input {
-            width: 100%; padding: 15px; margin: 20px 0;
-            border: 2px solid #ddd; border-radius: 10px; font-size: 16px; outline: none;
+            width: 100%; padding: 12px; margin-bottom: 20px;
+            border: 1px solid #ddd; border-radius: 0; font-size: 14px; outline: none;
         }
         .login-card button {
-            width: 100%; padding: 15px; background: var(--hitit-bordo);
-            color: white; border: none; border-radius: 10px; cursor: pointer; font-size: 18px; font-weight: bold;
+            width: 100%; padding: 12px; background: var(--hitit-bordo);
+            color: white; border: none; cursor: pointer; font-size: 14px; font-weight: 600; transition: 0.3s;
         }
+        .login-card button:hover { background: #000; }
 
-        /* 🏠 HEADER */
+        /* 🏠 ÜST NAVİGASYON */
         header {
-            background: var(--hitit-bordo); height: 60px; display: flex; align-items: center;
-            justify-content: space-between; padding: 0 25px; color: white;
+            background: white; height: 65px; display: flex; align-items: center;
+            justify-content: space-between; padding: 0 30px; border-bottom: 1px solid var(--border-color);
             z-index: 100; flex-shrink: 0;
         }
-        .logo-area { display: flex; align-items: center; gap: 15px; }
-        .logo-area img { height: 40px; background: white; padding: 2px; border-radius: 4px; }
+        .logo-area { display: flex; align-items: center; gap: 20px; }
+        .logo-area img { height: 45px; }
+        .logo-area div h1 { font-size: 16px; font-weight: 700; color: var(--hitit-bordo); line-height: 1; }
+        .logo-area div p { font-size: 11px; text-transform: uppercase; color: #636e72; margin-top: 4px; letter-spacing: 1px; }
 
+        /* 🏠 ANA DÜZEN */
         .main-layout { display: flex; flex: 1; overflow: hidden; }
 
-        /* 📂 SIDEBAR */
+        /* 📂 SOL MENÜ (AKADEMİK LİSTE) */
         .sidebar {
-            width: 280px; background: var(--beyaz); border-right: 2px solid #ddd;
-            display: flex; flex-direction: column; padding: 20px; gap: 8px; overflow-y: auto;
-            transition: transform 0.3s ease;
+            width: 320px; background: var(--bg-sidebar); border-right: 1px solid var(--border-color);
+            display: flex; flex-direction: column; padding: 0; overflow-y: auto;
         }
-        .sidebar h2 { color: var(--hitit-bordo); font-size: 15px; margin-bottom: 10px; border-bottom: 2px solid var(--hitit-bordo); padding-bottom: 5px; }
+        .sidebar-header { padding: 25px; border-bottom: 1px solid var(--border-color); }
+        .sidebar-header h2 { font-size: 14px; font-weight: 800; color: #b2bec3; letter-spacing: 1px; }
         
-        .module-btn {
-            background: var(--gri); border: 1px solid #eee; color: #333; padding: 12px;
-            border-radius: 8px; cursor: pointer; text-align: left; transition: 0.2s;
-            display: flex; align-items: center; gap: 10px; font-size: 12px;
+        .module-item {
+            padding: 18px 25px; border-bottom: 1px solid #f1f2f6; cursor: pointer;
+            transition: all 0.2s; display: flex; align-items: center; gap: 15px; color: #2d3436;
         }
-        .module-btn:hover { background: #e9ecef; border-color: var(--hitit-bordo); }
-        .module-btn.active { background: var(--hitit-bordo); color: white; }
+        .module-item:hover { background: #f9f9f9; padding-left: 30px; }
+        .module-item.active { background: #fff4f7; border-left: 4px solid var(--hitit-bordo); color: var(--hitit-bordo); font-weight: 600; }
+        .module-item i { font-size: 18px; opacity: 0.5; }
 
-        /* 📖 VIEWER */
-        .viewer-container {
-            flex: 1; display: flex; flex-direction: column; background: var(--arka-plan);
+        /* 📖 ÇALIŞMA ALANI */
+        .workspace {
+            flex: 1; display: flex; flex-direction: column; background: var(--bg-workspace); position: relative;
         }
 
-        /* 📗 KİTAP ALANI - Yakınlaştırma için overflow eklendi */
-        #book-viewport {
+        /* 🟢 PDF VİEWER AREA */
+        #viewport {
             flex: 1; display: flex; justify-content: center; align-items: center;
-            padding: 20px; overflow: auto; position: relative;
+            padding: 30px; overflow: auto; position: relative; scroll-behavior: smooth;
         }
-        .book-spread {
-            display: flex; gap: 2px; background: #000; padding: 2px;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.7);
+        .spread-container {
+            display: flex; gap: 4px; padding: 5px;
             transform-origin: center center;
             transition: transform 0.2s ease-out;
         }
         canvas {
-            max-width: 50vw; height: auto; max-height: 80vh; background: white; object-fit: contain;
+            max-width: 48vw; height: auto; max-height: 85vh; background: white;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
         }
-        canvas.single-page { max-width: 100%; }
+        canvas.cover { max-width: 100%; }
 
-        /* 🕹️ KONTROL PANELİ - Yakınlaştırma Seçenekleri Eklendi */
-        .control-bar {
-            height: 70px; background: var(--hitit-koyu); display: flex;
-            justify-content: space-between; align-items: center; padding: 0 30px; 
-            color: white; border-top: 2px solid rgba(255,255,255,0.1); flex-shrink: 0;
+        /* 🕹️ PROFESYONEL KONTROL PANELİ */
+        .action-bar {
+            height: 75px; background: rgba(255, 255, 255, 0.95); display: flex;
+            justify-content: space-between; align-items: center; padding: 0 40px; 
+            border-top: 1px solid var(--border-color); backdrop-filter: blur(10px);
         }
-        .control-group { display: flex; align-items: center; gap: 15px; }
+        .group { display: flex; align-items: center; gap: 12px; }
         
-        .nav-btn {
-            background: var(--hitit-bordo); color: white; border: 1px solid rgba(255,255,255,0.2);
-            padding: 8px 18px; border-radius: 20px; cursor: pointer; display: flex;
-            align-items: center; gap: 8px; transition: 0.3s; font-weight: 600; font-size: 14px;
+        .btn {
+            background: #f1f2f6; color: var(--text-main); border: none;
+            padding: 10px 16px; border-radius: 4px; cursor: pointer; display: flex;
+            align-items: center; gap: 8px; transition: 0.2s; font-size: 13px; font-weight: 600;
         }
-        .nav-btn:hover:not(:disabled) { background: #a30033; transform: translateY(-2px); }
-        .nav-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+        .btn:hover { background: #dfe6e9; }
+        .btn.primary { background: var(--hitit-bordo); color: white; }
+        .btn.primary:hover { background: #000; }
+        .btn:disabled { opacity: 0.2; cursor: not-allowed; }
 
-        .zoom-info { font-family: monospace; font-size: 14px; min-width: 50px; text-align: center; }
+        .page-indicator { font-size: 13px; font-weight: 700; color: var(--hitit-bordo); min-width: 100px; text-align: center; }
 
-        #loader { position: absolute; color: white; text-align: center; z-index: 10; display: none; }
-        .spinner { border: 4px solid rgba(255,255,255,0.1); border-top: 4px solid white; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: auto; }
-        @keyframes spin { 100% { transform: rotate(360deg); } }
+        #loader { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: white; text-align: center; z-index: 10; display: none; }
+        .spin { border: 3px solid rgba(255,255,255,0.1); border-top: 3px solid var(--hitit-bordo); border-radius: 50%; width: 40px; height: 40px; animation: load 0.8s linear infinite; margin-bottom: 10px; }
+        @keyframes load { 100% { transform: rotate(360deg); } }
 
-        /* Tam Ekran Durumu İçin CSS */
-        body.is-fullscreen .sidebar { display: none; }
-        body.is-fullscreen header { display: none; }
+        /* Tam Ekran Modu */
+        body.fullscreen-mode header, body.fullscreen-mode .sidebar { display: none; }
     </style>
 </head>
 <body oncontextmenu="return false">
@@ -127,121 +135,118 @@
     <div id="login-overlay">
         <div class="login-card">
             <img src="https://hitit.edu.tr/images/HititLogoYeni.svg">
-            <h2 style="color:var(--hitit-bordo)">Akademisyen Girişi</h2>
-            <input type="password" id="passInput" placeholder="Erişim Şifresi">
-            <button onclick="handleLogin()">Sisteme Eriş</button>
+            <h2>DİJİTAL PORTAL</h2>
+            <input type="password" id="passKey" placeholder="Erişim Anahtarı">
+            <button onclick="login()">SİSTEME GİRİŞ YAP</button>
         </div>
     </div>
 
     <header>
         <div class="logo-area">
             <img src="https://hitit.edu.tr/images/HititLogoYeni.svg">
-            <h1>HİTİT ÜNİVERSİTESİ | <span style="font-weight: 300;">Dijital Kütüphane</span></h1>
+            <div>
+                <h1>HİTİT ÜNİVERSİTESİ</h1>
+                <p>Eğitim Kılavuzları Yayın Sistemi</p>
+            </div>
         </div>
-        <div id="mod-title" style="font-size: 13px; opacity: 0.8;">Bir modül seçin...</div>
+        <div id="active-doc" style="font-size: 12px; font-weight: 600; color: #b2bec3;">Belge Seçiniz</div>
     </header>
 
     <div class="main-layout">
         <div class="sidebar">
-            <h2><i class="fas fa-list"></i> KILAVUZLAR</h2>
-            <div id="module-list"></div>
+            <div class="sidebar-header">
+                <h2>YAYIN KATALOĞU</h2>
+            </div>
+            <div id="catalog"></div>
         </div>
 
-        <div class="viewer-container" id="viewer">
-            <div id="book-viewport">
+        <div class="workspace" id="viewer">
+            <div id="viewport">
                 <div id="loader">
-                    <div class="spinner"></div>
-                    <p style="margin-top:10px">Hazırlanıyor...</p>
+                    <div class="spin"></div>
+                    <p style="font-size: 12px;">Döküman İşleniyor...</p>
                 </div>
-                <div class="book-spread" id="book-spread">
-                    <canvas id="canvas-left"></canvas>
-                    <canvas id="canvas-right"></canvas>
+                <div class="spread-container" id="spread">
+                    <canvas id="left-pg"></canvas>
+                    <canvas id="right-pg"></canvas>
                 </div>
             </div>
 
-            <div class="control-bar">
-                <div class="control-group">
-                    <button class="nav-btn" onclick="prevStep()" id="prevBtn"><i class="fas fa-chevron-left"></i> Geri</button>
-                    <div style="font-size: 14px; font-weight: 600;">
-                        <span id="pageInfo">0 / 0</span>
-                    </div>
-                    <button class="nav-btn" onclick="nextStep()" id="nextBtn">İleri <i class="fas fa-chevron-right"></i></button>
+            <div class="action-bar">
+                <div class="group">
+                    <button class="btn" onclick="prev()"><i class="fas fa-arrow-left"></i> ÖNCEKİ</button>
+                    <div class="page-indicator" id="pgInfo">0 / 0</div>
+                    <button class="btn" onclick="next()">SONRAKİ <i class="fas fa-arrow-right"></i></button>
                 </div>
 
-                <div class="control-group" style="background: rgba(255,255,255,0.1); padding: 5px 15px; border-radius: 30px;">
-                    <button class="nav-btn" style="padding: 5px 10px;" onclick="changeZoom(-0.2)" title="Uzaklaştır"><i class="fas fa-search-minus"></i></button>
-                    <span class="zoom-info" id="zoomText">100%</span>
-                    <button class="nav-btn" style="padding: 5px 10px;" onclick="changeZoom(0.2)" title="Yakınlaştır"><i class="fas fa-search-plus"></i></button>
-                    <button class="nav-btn" style="padding: 5px 10px; background: none;" onclick="resetZoom()" title="Sıfırla"><i class="fas fa-sync-alt"></i></button>
+                <div class="group" style="background: #f1f2f6; padding: 5px; border-radius: 6px;">
+                    <button class="btn" style="padding: 8px;" onclick="zoom(-0.2)"><i class="fas fa-minus"></i></button>
+                    <span id="zoomVal" style="font-size: 12px; font-weight: 800; width: 50px; text-align: center;">100%</span>
+                    <button class="btn" style="padding: 8px;" onclick="zoom(0.2)"><i class="fas fa-plus"></i></button>
                 </div>
 
-                <div class="control-group">
-                    <button class="nav-btn" onclick="toggleFS()" id="fsBtn">
-                        <i class="fas fa-expand"></i> <span id="fsText">Tam Ekran</span>
-                    </button>
+                <div class="group">
+                    <button class="btn primary" onclick="toggleFull()"><i class="fas fa-expand"></i> TAM EKRAN</button>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        const HITIT_PASS = "hitit2026";
-        let pdfDoc = null;
-        let currentIdx = 1;
-        let isRendering = false;
-        let currentZoom = 1.0;
+        const AUTH_KEY = "hitit2026";
+        let pdf = null, idx = 1, currentZoom = 1.0, isRendering = false;
 
-        // Giriş ve Modül Listesi
-        if(sessionStorage.getItem("hitit_auth") === "ok") document.getElementById("login-overlay").style.display="none";
-        function handleLogin() {
-            if(document.getElementById("passInput").value === HITIT_PASS) {
-                sessionStorage.setItem("hitit_auth", "ok");
+        if(sessionStorage.getItem("hitit_verified") === "true") document.getElementById("login-overlay").style.display="none";
+        
+        function login() {
+            if(document.getElementById("passKey").value === AUTH_KEY) {
+                sessionStorage.setItem("hitit_verified", "true");
                 document.getElementById("login-overlay").style.display="none";
-            } else { alert("Hatalı şifre!"); }
+            } else { alert("Geçersiz Anahtar."); }
         }
 
-        const modules = [
-            { title: "Ölçme Değerlendirme - Modül 1", url: "olcme_modul1.pdf" },
-            { title: "Ölçme Değerlendirme - Modül 2", url: "olcme_modul2.pdf" },
-            { title: "Yapay Zeka - Modül 1", url: "yz_modul1.pdf" },
-            { title: "Yapay Zeka - Modül 2", url: "yz_modul2.pdf" }
+        const docs = [
+            { title: "Ölçme Değerlendirme Modül 1", file: "olcme_modul1.pdf" },
+            { title: "Ölçme Değerlendirme Modül 2", file: "olcme_modul2.pdf" },
+            { title: "Yapay Zeka Modül 1", file: "yz_modul1.pdf" },
+            { title: "Yapay Zeka Modül 2", file: "yz_modul2.pdf" }
         ];
 
-        const list = document.getElementById("module-list");
-        modules.forEach(m => {
-            const b = document.createElement("button");
-            b.className = "module-btn";
-            b.innerHTML = `<i class="fas fa-file-pdf"></i> ${m.title}`;
-            b.onclick = () => loadBook(m.url, m.title, b);
-            list.appendChild(b);
+        const catalog = document.getElementById("catalog");
+        docs.forEach(d => {
+            const div = document.createElement("div");
+            div.className = "module-item";
+            div.innerHTML = `<i class="fas fa-file-invoice"></i> ${d.title}`;
+            div.onclick = () => loadDoc(d.file, d.title, div);
+            catalog.appendChild(div);
         });
 
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
-        async function loadBook(url, title, btn) {
-            document.querySelectorAll(".module-btn").forEach(x => x.classList.remove("active"));
-            btn.classList.add("active");
-            document.getElementById("mod-title").textContent = title;
+        async function loadDoc(url, title, el) {
+            document.querySelectorAll(".module-item").forEach(m => m.classList.remove("active"));
+            el.classList.add("active");
+            document.getElementById("active-doc").textContent = title.toUpperCase();
             document.getElementById("loader").style.display = "block";
-            resetZoom();
+            currentZoom = 1.0; applyZoom();
 
             try {
-                pdfDoc = await pdfjsLib.getDocument(url).promise;
-                currentIdx = 1;
-                renderSpread();
-            } catch (err) {
-                alert("Dosya yüklenemedi! Lütfen dosya adını kontrol edin.");
+                pdf = await pdfjsLib.getDocument(url).promise;
+                idx = 1;
+                render();
+            } catch (e) {
+                alert("Döküman yüklenemedi.");
                 document.getElementById("loader").style.display = "none";
             }
         }
 
-        async function renderPage(num, canvasId) {
-            const canvas = document.getElementById(canvasId);
-            if (!num || num > pdfDoc.numPages) { canvas.style.display = "none"; return; }
+        async function draw(num, id) {
+            const canvas = document.getElementById(id);
+            if (!num || num > pdf.numPages) { canvas.style.display = "none"; return; }
             canvas.style.display = "block";
-            const page = await pdfDoc.getPage(num);
+            const page = await pdf.getPage(num);
             const dpr = window.devicePixelRatio || 1;
-            const viewport = page.getViewport({ scale: 2.5 }); // Yakınlaştırma için yüksek kalite render
+            const viewport = page.getViewport({ scale: 2.2 }); // Yüksek kalite sabit render
             const ctx = canvas.getContext("2d");
             canvas.height = viewport.height * dpr;
             canvas.width = viewport.width * dpr;
@@ -249,76 +254,42 @@
             await page.render({ canvasContext: ctx, viewport }).promise;
         }
 
-        async function renderSpread() {
+        async function render() {
             if (isRendering) return;
             isRendering = true;
             document.getElementById("loader").style.display = "block";
 
-            const left = document.getElementById("canvas-left");
-            const right = document.getElementById("canvas-right");
+            const L = document.getElementById("left-pg"), R = document.getElementById("right-pg");
 
-            if (currentIdx === 1) {
-                left.style.display = "none";
-                await renderPage(1, "canvas-right");
-                right.className = "single-page";
-                document.getElementById("pageInfo").textContent = `1 / ${pdfDoc.numPages}`;
+            if (idx === 1) {
+                L.style.display = "none";
+                await draw(1, "right-pg");
+                R.className = "cover";
+                document.getElementById("pgInfo").textContent = `KAPAK / ${pdf.numPages}`;
             } else {
-                right.className = "";
-                await renderPage(currentIdx, "canvas-left");
-                await renderPage(currentIdx + 1, "canvas-right");
-                const end = Math.min(currentIdx + 1, pdfDoc.numPages);
-                document.getElementById("pageInfo").textContent = `${currentIdx}-${end} / ${pdfDoc.numPages}`;
+                R.className = "";
+                await draw(idx, "left-pg");
+                await draw(idx + 1, "right-pg");
+                const end = Math.min(idx + 1, pdf.numPages);
+                document.getElementById("pgInfo").textContent = `${idx}-${end} / ${pdf.numPages}`;
             }
 
             document.getElementById("loader").style.display = "none";
             isRendering = false;
-            document.getElementById("prevBtn").disabled = (currentIdx === 1);
-            document.getElementById("nextBtn").disabled = (currentIdx + 1 >= pdfDoc.numPages);
         }
 
-        // Yakınlaştırma Fonksiyonları
-        function changeZoom(delta) {
-            currentZoom = Math.min(Math.max(0.5, currentZoom + delta), 3.0);
-            applyZoom();
+        function zoom(val) { currentZoom = Math.min(Math.max(0.6, currentZoom + val), 2.5); applyZoom(); }
+        function applyZoom() { 
+            document.getElementById("spread").style.transform = `scale(${currentZoom})`; 
+            document.getElementById("zoomVal").textContent = Math.round(currentZoom * 100) + "%";
         }
-
-        function resetZoom() {
-            currentZoom = 1.0;
-            applyZoom();
-        }
-
-        function applyZoom() {
-            const spread = document.getElementById("book-spread");
-            spread.style.transform = `scale(${currentZoom})`;
-            document.getElementById("zoomText").textContent = `${Math.round(currentZoom * 100)}%`;
-        }
-
-        // Navigasyon ve Tam Ekran
-        function nextStep() { if (currentIdx === 1) currentIdx = 2; else currentIdx += 2; renderSpread(); }
-        function prevStep() { if (currentIdx === 2) currentIdx = 1; else currentIdx -= 2; renderSpread(); }
-        
-        function toggleFS() { 
+        function next() { if (idx === 1) idx = 2; else idx += 2; if(idx <= pdf.numPages) render(); }
+        function prev() { if (idx === 2) idx = 1; else idx -= 2; if(idx >= 1) render(); }
+        function toggleFull() { 
             const v = document.getElementById("viewer");
-            const icon = document.querySelector("#fsBtn i");
-            const text = document.getElementById("fsText");
-
-            if (!document.fullscreenElement) {
-                v.requestFullscreen();
-                document.body.classList.add("is-fullscreen");
-                icon.className = "fas fa-compress";
-                text.textContent = "Çıkış";
-            } else {
-                document.exitFullscreen();
-                document.body.classList.remove("is-fullscreen");
-                icon.className = "fas fa-expand";
-                text.textContent = "Tam Ekran";
-            }
+            if (!document.fullscreenElement) { v.requestFullscreen(); document.body.classList.add("fullscreen-mode"); }
+            else { document.exitFullscreen(); document.body.classList.remove("fullscreen-mode"); }
         }
-
-        document.addEventListener("keydown", (e) => { 
-            if(e.key === "ArrowRight") nextStep(); 
-            if(e.key === "ArrowLeft") prevStep(); 
-        });
     </script>
 </body>
 </html>
